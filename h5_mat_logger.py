@@ -202,7 +202,7 @@ class H5MatLogger:
                 self.f.close()
             self._closed = True
 
-    def to_mat(self, out_path: Optional[str] = None, version: str = "v7.3") -> str:
+    def to_mat(self, out_path: Optional[str] = None, version: str = "v7.3", extra_arrays: Optional[Dict[str, Any]] = None) -> str:
         """
         Convert the stored data to a .mat file AFTER acquisition.
         version: 'v7.3' (HDF5-based; requires hdf5storage) or 'v7' (requires scipy).
@@ -237,6 +237,27 @@ class H5MatLogger:
                 mdict["notes"] = _maybe_to_str(f.attrs["notes"])
             if "created_utc" in f.attrs:
                 mdict["created_utc"] = _maybe_to_str(f.attrs["created_utc"])
+            # Optional bias datasets captured outside the main stream
+            if "bias_pre" in f:
+                mdict["bias_pre"] = f["bias_pre"][...]
+            if "bias_pre_time" in f:
+                mdict["bias_pre_time"] = f["bias_pre_time"][...]
+            if "bias_post" in f:
+                mdict["bias_post"] = f["bias_post"][...]
+            if "bias_post_time" in f:
+                mdict["bias_post_time"] = f["bias_post_time"][...]
+
+        # Merge any extra arrays provided by the caller into the dict to be saved.
+        # Caller values will be converted to numpy arrays; existing keys will be overwritten.
+        if extra_arrays is not None:
+            for k, v in extra_arrays.items():
+                # ensure key is a string
+                if not isinstance(k, str):
+                    raise ValueError("extra_arrays keys must be strings (MAT variable names)")
+                try:
+                    mdict[k] = np.asarray(v)
+                except Exception as e:
+                    raise ValueError(f"Could not convert extra_arrays['{k}'] to numpy array: {e}")
 
         savemat(out_path, mdict, do_compression=True)
 

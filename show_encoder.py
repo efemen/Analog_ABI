@@ -8,7 +8,7 @@ from nidaqmx.constants import AcquisitionType, EncoderType, AngleUnits, EncoderZ
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-DEVICE = "Dev2"
+DEVICE = "Dev4"
 COUNTER = "ctr0"
 PPR = 1000
 
@@ -24,16 +24,16 @@ enc_ch = task.ci_channels.add_ci_ang_encoder_chan(
 )
 
 enc_ch.ci_encoder_a_input_term = f"/{DEVICE}/PFI8"
-enc_ch.ci_encoder_b_input_term = f"/{DEVICE}/PFI9"
-enc_ch.ci_encoder_z_input_term = f"/{DEVICE}/PFI10"
+enc_ch.ci_encoder_z_input_term = f"/{DEVICE}/PFI9"
+enc_ch.ci_encoder_b_input_term = f"/{DEVICE}/PFI10"
 
-enc_ch.ci_encoder_a_input_dig_fltr_enable = True
-enc_ch.ci_encoder_b_input_dig_fltr_enable = True
-enc_ch.ci_encoder_z_input_dig_fltr_enable = True
+# enc_ch.ci_encoder_a_input_dig_fltr_enable = True
+# enc_ch.ci_encoder_b_input_dig_fltr_enable = True
+# enc_ch.ci_encoder_z_input_dig_fltr_enable = True
 
-enc_ch.ci_encoder_a_input_dig_fltr_min_pulse_width = 2e-6
-enc_ch.ci_encoder_b_input_dig_fltr_min_pulse_width = 2e-6
-enc_ch.ci_encoder_z_input_dig_fltr_min_pulse_width = 2e-6
+# enc_ch.ci_encoder_a_input_dig_fltr_min_pulse_width = 2e-6
+# enc_ch.ci_encoder_b_input_dig_fltr_min_pulse_width = 2e-6
+# enc_ch.ci_encoder_z_input_dig_fltr_min_pulse_width = 2e-6
 
 def main():
     # Start the encoder task (on-demand reads)
